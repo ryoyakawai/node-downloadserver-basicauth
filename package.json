@@ -1,0 +1,19 @@
+{
+    "name": "download_w_basicauth",
+    "version": "1.0.0",
+    "description": "",
+    "main": "",
+    "scripts": {
+        "test": "echo \"[Error] USE './bin/launch.sh reports' to run tests\" && exit 1",
+        "start": "nodemon server/index.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {},
+    "dependencies": {
+        "express": "^4.17.1",
+        "morgan": "^1.9.1",
+        "nodemon": "^1.19.1",
+        "serve-index": "^1.9.1"
+    }
+}

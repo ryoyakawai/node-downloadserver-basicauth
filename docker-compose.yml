@@ -1,0 +1,20 @@
+version: '3.5'
+
+services:
+  download_server:
+    container_name: ${CONTAINER_NAME}
+    env_file:
+      - .env
+    build:
+      dockerfile: ./container/Dockerfile
+      context: ./
+    restart: always
+    environment:
+      WEB_PORT: ${WEB_PORT_TO_EXPOSE}
+      USERID: ${BASICAUTH_USERID}
+      PASSWD: ${BASICAUTH_PASSWD}
+      DOWNLOAD_FILE_DIR: ${DOWNLOAD_FILE_DIR}
+    ports:
+      - ${WEB_PORT_TO_EXPOSE}:${WEB_PORT_TO_EXPOSE}
+    volumes:
+      - ${DOWNLOAD_FILE_DIR}:${DOWNLOAD_FILE_DIR}:ro
