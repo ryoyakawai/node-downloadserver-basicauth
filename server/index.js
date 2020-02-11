@@ -20,11 +20,6 @@
   let serverRootPath = `${process.cwd()}`
   let index_file = 'index.html' // { false, <index file name>}
 
-  let exec_test_run = {
-    isrun: false,
-    params: {}
-  }
-
   console.log(' >>> BASIC AUTH name=[%s] pass=[%s]', site_credentials.name, site_credentials.pass)
   console.log(' >>> dirname=[%s] cwd=[%s]', __dirname, process.cwd())
 
