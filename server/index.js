@@ -11,8 +11,8 @@
 
   let path_in_url = '/' // path of the URL
   let path_to_expose = `${__dirname}/static` // directory to expose
-  if(process.env.STATC_PATH_IN_URL != undefined && process.env.STATC_PATH_IN_URL != "") {
-    path_in_url = process.env.STATC_PATH_IN_URL
+  if(process.env.STATIC_PATH_IN_URL != undefined && process.env.STATIC_PATH_IN_URL != "") {
+    path_in_url = process.env.STATIC_PATH_IN_URL
   }
   if(process.env.STATIC_PATH_TO_EXPOSE != undefined && process.env.STATIC_PATH_TO_EXPOSE != "") {
     path_to_expose = process.env.STATIC_PATH_TO_EXPOSE

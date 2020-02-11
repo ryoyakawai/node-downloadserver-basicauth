@@ -6,11 +6,12 @@ This is the easy server to publish files in directory with restriction by basic 
 ## How to setup
 all of setting/configutation is written in `.env`.
 ```shell:.env
-CONTAINER_NAME=download_server
+CONTAINER_NAME=serve_static_files
 WEB_PORT_TO_EXPOSE=8081
 BASICAUTH_USERID=userid
 BASICAUTH_PASSWD=passwd
-DOWNLOAD_FILE_DIR=/tmp/download
+STATIC_PATH_IN_URL=/
+STATIC_PATH_TO_EXPOSE=/tmp/download
 ```
 
 Each parameters are used for purpose of configuring these.
@@ -19,7 +20,8 @@ Each parameters are used for purpose of configuring these.
 - `WEB_PORT_TO_EXPOSE` : exposed port for web server
 - `BASICAUTH_USERID` : userid of basic authentication
 - `BASICAUTH_PASSWD` : password of basic authentication
-- `DOWNLOAD_FILE_DIR` : directory to expose in web content
+- `STATIC_PATH_IN_URL` : path of the URL
+- `STATIC_PATH_TO_EXPOSE` : path of the directory to expose
 
 ## build
 
