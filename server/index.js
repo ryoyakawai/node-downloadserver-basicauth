@@ -9,18 +9,16 @@
   const app = express()
   const router = express.Router()
 
-  const path_to_target = '/download'
-  const path_to_target_dest = `${process.env.DOWNLOAD_FILE_DIR}` || `.${path_to_target}`
-
-  const basic_auth = require('basic-auth')
-  let site_credentials = {}
-  site_credentials.name = process.env.USERID || "default_name"
-  site_credentials.pass = process.env.PASSWD || "default_pass"
-
-  let serverRootPath = `${process.cwd()}`
-  let index_file = 'index.html' // { false, <index file name>}
-
-  console.log(' >>> BASIC AUTH name=[%s] pass=[%s]', site_credentials.name, site_credentials.pass)
+  let path_in_url = '/' // path of the URL
+  let path_to_expose = `${__dirname}/static` // directory to expose
+  if(process.env.STATC_PATH_IN_URL != undefined && process.env.STATC_PATH_IN_URL != "") {
+    path_in_url = process.env.STATC_PATH_IN_URL
+  }
+  if(process.env.STATIC_PATH_TO_EXPOSE != undefined && process.env.STATIC_PATH_TO_EXPOSE != "") {
+    path_to_expose = process.env.STATIC_PATH_TO_EXPOSE
+  }
+  let reg_exp = new RegExp("^\\.")
+  path_to_expose = path_to_expose.replace(reg_exp, __dirname)
   console.log(' >>> dirname=[%s] cwd=[%s]', __dirname, process.cwd())
 
   app.use(express.json())
@@ -28,33 +26,53 @@
   app.use(morgan('combined'))
   app.disable('x-powered-by')
 
-  const auth = (request, response, next) => {
-    const new_user = basic_auth(request)
-    const response401 = () => {
-      response.set('WWW-Authenticate', 'Basic')
-      return response.status(401).send()
-    }
-
-    if (!new_user
-        || new_user.name != site_credentials.name
-        || new_user.pass != site_credentials.pass)  {
-      response.set('WWW-Authenticate', 'Basic')
-      return response.status(401).send()
-    }
-    return next()
-  }
-
   const server = app.listen( HTTP_PORT, () => {
     console.log(' >> App is running in HTTP_PORT=[%s] ', HTTP_PORT)
   })
 
-  app.use(path_to_target, auth)
-  app.use(path_to_target, express.static(path_to_target_dest, { index: index_file }))
-  app.use(path_to_target, serveIndex(path_to_target_dest, {
+  let serverRootPath = `${process.cwd()}`
+  let index_file = 'index.html' // { false, <index file name>}
+
+  // vvv basic authentication vvv
+  const basic_auth = require('basic-auth')
+  let site_credentials = {}
+  let set_basic_auth = false
+  let auth = (request, response, next) => {
+    return next()
+  }
+  if(( process.env.USERID != undefined || process.env.PASSWD != undefined )
+     && ( process.env.USERID != "" || process.env.PASSWD != "" ) ) {
+    set_basic_auth = true
+    site_credentials.name = process.env.USERID || "default_name"
+    site_credentials.pass = process.env.PASSWD || "default_pass"
+    auth = (request, response, next) => {
+      const new_user = basic_auth(request)
+      const response401 = () => {
+        response.set('WWW-Authenticate', 'Basic')
+        return response.status(401).send()
+      }
+
+      if (!new_user
+          || new_user.name != site_credentials.name
+          || new_user.pass != site_credentials.pass)  {
+        response.set('WWW-Authenticate', 'Basic')
+        return response.status(401).send()
+      }
+      return next()
+    }
+  }
+  if(set_basic_auth) {
+    app.use(path_in_url, auth)
+    console.log(' >>> BASIC AUTH name=[%s] pass=[%s]', site_credentials.name, site_credentials.pass)
+  }
+  // ^^^ set basic auth ^^^
+
+  app.use(path_in_url, express.static(path_to_expose, { index: index_file }))
+  app.use(path_in_url, serveIndex(path_to_expose, {
     icons: true,
     view: 'details'
   }))
-  console.log(' >> [PATH] targetDir=[%s] url=[%s]', path_to_target, path_to_target_dest)
+  console.log(' >> [PATH] url=[http://localhost:%s%s] exposed_dir=[%s]', HTTP_PORT, path_in_url, path_to_expose)
 
   // healthcheck
   app.get('/healthcheck', (req, res) => {
