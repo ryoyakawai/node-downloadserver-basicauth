@@ -72,7 +72,7 @@
     icons: true,
     view: 'details'
   }))
-  console.log(' >> [PATH] url=[http://localhost:%s%s] exposed_dir=[%s]', HTTP_PORT, path_in_url, path_to_expose)
+  console.log(' >> [PATH] url=[http://localhost:%s%s] exposed_dir=[%s] path_in_url=[%s]', HTTP_PORT, path_in_url, path_to_expose, path_in_url)
 
   // healthcheck
   app.get('/healthcheck', (req, res) => {
