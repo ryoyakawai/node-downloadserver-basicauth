@@ -1,4 +1,4 @@
-"use strict";
+utils"use strict";
 
 (async () => {
 
@@ -8,6 +8,7 @@
   const serveIndex = require('serve-index')
   const app = express()
   const router = express.Router()
+  const util = require('util')
 
   let path_in_url = '/' // path of the URL
   let path_to_expose = `${__dirname}/static` // directory to expose
@@ -78,6 +79,15 @@
   app.get('/healthcheck', (req, res) => {
     res.status(200).send()
   })
+
+  // check POST headers and body
+  /*
+  app.post('/check', (req, res) => {
+    console.log(util.inspect(req.headers, false, null, true))
+    console.log(util.inspect(req.body, false, null, true))
+    res.status(200).send("00")
+  })
+  */
 
   // 404 Not Found
   app.get('*', function(req, res){
